@@ -1,4 +1,5 @@
-import {CHANGE_INPUT_VALUE, ADD_TODO_ITEM, DELETE_TODO_ITEM} from './actionTypes';
+// action types
+import {CHANGE_INPUT_VALUE, ADD_TODO_ITEM, DELETE_TODO_ITEM, INIT_LIST_ACTION} from './actionTypes';
 
 const defaultState = {
     inputValue: '',
@@ -6,7 +7,7 @@ const defaultState = {
 };
 
 // state 是整个store的数据
-// reducer 可以接受state，但绝对不能修改state
+// reducer 可以接受state，但绝对不能修改state, 根据不同 action， 返回不同的数据
 export default (state = defaultState, action) => {
     switch (action.type) {
         case CHANGE_INPUT_VALUE:
@@ -22,6 +23,10 @@ export default (state = defaultState, action) => {
             const delState = JSON.parse(JSON.stringify(state));
             delState.list.splice(action.index, 1);
             return delState;
+        case INIT_LIST_ACTION:
+            const initState = JSON.parse(JSON.stringify(state));
+            initState.list = action.data;
+            return initState;
         default:
             return state;
     }

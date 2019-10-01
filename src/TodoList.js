@@ -1,12 +1,17 @@
 import React, {Component} from 'react';
 // antd 样式
 import 'antd/dist/antd.css';
-// antd 组件
-import {Input, Button, List} from 'antd';
 // Redux store
 import store from './store/index.js';
 // Action creators action的创建函数
-import {getInputChangeAction, getAddItemAction, getDeleteItemAction} from './store/actionCreators';
+import {
+    getInputChangeAction,
+    getAddItemAction,
+    getDeleteItemAction,
+    getTodoList
+} from './store/actionCreators';
+// UI组件
+import TodoListUI from './TodoListUI';
 
 class TodoList extends Component {
     constructor(props) {
@@ -15,6 +20,7 @@ class TodoList extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleStoreChange = this.handleStoreChange.bind(this);
         this.handleBtnClick = this.handleBtnClick.bind(this);
+        this.handleItemDelete = this.handleItemDelete.bind(this);
         // subscribe 注册一个事件监听，每当store中的数据发生变化时都会自动触发。
         store.subscribe(this.handleStoreChange);
     }
@@ -46,29 +52,19 @@ class TodoList extends Component {
     }
 
     render() {
-        return (
-            <div style={{marginTap: 10, marginLeft: 10}}>
-                <div>
-                    <Input
-                        value={this.state.inputValue}
-                        placeholder="todo info"
-                        style={{width: 300, marginRight: 10}}
-                        onChange={this.handleInputChange}></Input>
-                    <Button type="primary"
-                            onClick={this.handleBtnClick}>提交</Button>
-                </div>
-                <List
-                    style={{marginTop: 10, width: 300}}
-                    bordered
-                    dataSource={this.state.list}
-                    renderItem={(item, index) => (
-                        <List.Item onClick={this.handleItemDelete.bind(this, index)}>
-                            {item}
-                        </List.Item>
-                    )}
-                />
-            </div>
-        )
+        return <TodoListUI
+            inputValue={this.state.inputValue}
+            list={this.state.list}
+            handleInputChange={this.handleInputChange}
+            handleBtnClick={this.handleBtnClick}
+            handleItemDelete={this.handleItemDelete}/>
+    }
+
+    componentDidMount() {
+        // 返回一个函数
+        const action = getTodoList();
+        // 当把这个action 派发出去的时候， 函数自动会执行
+        store.dispatch(action);
     }
 }
 
